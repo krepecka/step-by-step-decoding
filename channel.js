@@ -8,6 +8,7 @@ class Channel{
     }
 }
 
+//grąžina klaidų pozicijų masyvą, vektorius yra pakeičiamas viduje
 Channel.prototype.send = function(vector){
     var mistakes = [];
 

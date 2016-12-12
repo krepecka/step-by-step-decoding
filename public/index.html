@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Kodavimo teorija - A11 - Kristupas Repečka</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/main.css" type="text/css">
+</head>
+
+<body>
+    <form method="post">
+        <div>
+            <label>Kodo dimensija(n):</label>
+            <input type="number" id="code_dimension" />
+        </div>
+        <div>
+            <label>Kodo ilgis(k):</label>
+            <input type="number" id="code_length" />
+        </div>
+        <div>
+            <label>Klaidos tikimybė(0 <= <i>p</i> <= 1)</label>
+            <input type="number" min="0" max="1" step="0.00001" id="p" />
+        </div>
+        <div>
+            <!--<fieldset disabled>-->
+
+            <label for="msg">Generuojanti matrica:</label>
+            <textarea id="matrix" placeholder="Standartinio pavidalo. Langelius atskirkite tarpais, matricos eilutes - nauja eilute"></textarea>
+
+            <!--</fieldset>-->
+        </div>
+        <div>
+            <label>Įveskite n ilgio vektorių</label>
+            <input type="number" id="vector" />
+        </div>
+
+        <div class="button">
+            <button type="button" id="encode">Užkoduoti</button>
+        </div>
+        <fieldset disabled>
+            <div>
+                <label>Užkoduotas vektorius</label>
+                <input type="number" id="encoded" readonly/>
+            </div>
+            <div>
+                <label>Iš kanalo gautas vektorius</label>
+                <input type="number" id="received"/>
+            </div>
+            <div>
+                <label>Klaidų skaičius</label>
+                <input type="number" id="mistakes_made" readonly/>
+            </div>
+            <div>
+                <label>Klaidų pozicijos</label>
+                <input type="text" id="mistakes" readonly/>
+            </div>
+        </fieldset>
+        <div id="result"></div>
+        <div class="button">
+            <button type="button" id="decode">Dekoduoti iš kanalo gautą vektorių</button>
+        </div>
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="js/index.js"></script>
+</body>
+
+</html>

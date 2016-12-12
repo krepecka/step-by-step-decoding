@@ -27,8 +27,7 @@ class Matrix {
         }
     }
 }
-
-
+//debug'inimui
 Matrix.prototype.show = function () {
     console.log('----------');
     this.rows.forEach(function (element) {
