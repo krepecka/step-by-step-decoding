@@ -1,4 +1,4 @@
-$('#decode').hide();
+$('.decode').hide();
 //$('fieldset').hide();
 
 $("#encode").click(function (e) {
@@ -130,6 +130,8 @@ function checkMatrix(matrix, n, k) {
     return rows;
 }
 
+// VEKTORIUS
+
 function parseEncodingResult(data) {
     var encoded = data.encodedVector;
     var mistakesMade = data.numOfMistakes;
@@ -148,10 +150,58 @@ function parseEncodingResult(data) {
     $('#mistakes_made').val(mistakesMade);
     $('#mistakes').val(mistakes.join(', '));
 
-    $('#decode').show();
+    $('.decode').show();
 }
 
 function parseDecodingResult(data){
     var decoded = data.decodedVector;
-    console.log(decoded);
+    $('#decoded').val(decoded.join(''));
 }
+
+// TEKSTAS
+
+$("#endode_t").click(function (e) {
+    var k = parseInt($("#code_length").val());
+    var n = parseInt($("#code_dimension").val());
+    var p = parseFloat($("#p").val());
+    var matrix = $("#matrix").val();
+    var text = $("#text_r").val();
+
+    if (isNaN(p) || p > 1 || p < 0) {
+        alert("p turi būti tarp 0 ir 1");
+        return false;
+    }
+
+    if (isNaN(k) || isNaN(n) || n == 0 || k == 0) {
+        alert("n ir k turi būti užpildyti");
+        return false;
+    }
+
+    if(text == undefined || text == ""){
+        alert("Tekstas turi būti užpildytas");
+        return false;
+    }
+
+    var rows = checkMatrix(matrix, n, k);
+
+    //jei nepraėjo tikrinimų - nevykdom
+    if(!rows){
+        return;
+    }
+
+    $.ajax({
+        url: '/encode_t',
+        method: "POST",
+        data: {
+            k: k,
+            n: n,
+            p: p,
+            matrix: rows,
+            text: text
+        },
+    }).done(function (data) {
+        console.log(data);
+        parseTextResult(data);
+    });
+
+});

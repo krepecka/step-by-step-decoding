@@ -11,16 +11,16 @@
     <ul class="tab">
         <li>
             <a href="javascript:void(0)" class="tablinks" onclick="changeTab(event, 'Vector')" id="defaultOpen">Vektorius</a>
-        </li>
-        <li>
-            <a href="javascript:void(0)" class="tablinks" onclick="changeTab(event, 'Text')">Tekstas</a>
-        </li>
-        <li>
-            <a href="javascript:void(0)" class="tablinks" onclick="changeTab(event, 'Image')">Paveikslėlis</a>
-        </li>
-    </ul>
+</li>
+<li>
+    <a href="javascript:void(0)" class="tablinks" onclick="changeTab(event, 'Text')">Tekstas</a>
+</li>
+<li>
+    <a href="javascript:void(0)" class="tablinks" onclick="changeTab(event, 'Image')">Paveikslėlis</a>
+</li>
+</ul>
 
-    <form method="post">
+<form method="post">
 
     <h3>Kodo parametrai</h3>
 
@@ -69,19 +69,36 @@
                 <input type="text" id="mistakes" readonly/>
             </div>
         </fieldset>
-        <div id="result"></div>
-        <div class="button">
+        <div class="button decode">
             <button type="button" id="decode">Dekoduoti iš kanalo gautą vektorių</button>
+        </div>
+        <div class="decode">
+            <label>Ištaisytas vektorius</label>
+            <input type="number" id="decoded" readonly/>
         </div>
     </div>
 
     <div id="Text" class="tabcontent">
-        <h3>Text</h3>
-        <p>Text is the capital of France.</p>
+        <h3>Tekstas</h3>
+        <div>
+            <label for="msg">Jūsų tekstas:</label>
+            <textarea id="text_r" placeholder="Įveskite tekstą, kurį norite užkoduoti"></textarea>
+        </div>
+        <div class="button">
+            <button type="button" id="endode_t">Siųsti tekstą kanalu</button>
+        </div>
+        <div>
+            <label for="msg">Rezultatas be kodavimo:</label>
+            <textarea id="text_noencoding" placeholder="" readonly></textarea>
+        </div>
+        <div>
+            <label for="msg">Rezultatas su kodavimu:</label>
+            <textarea id="text_decoded" placeholder="" readonly></textarea>
+        </div>
     </div>
 
     <div id="Image" class="tabcontent">
-        <h3>Image</h3>
+        <h3>Paveikslėlis</h3>
         <p>Image is the capital of Japan.</p>
     </div>
 

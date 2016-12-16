@@ -7,6 +7,9 @@ var Matrix = require("./matrix.js").Matrix;
 var Channel = require("./channel.js").Channel;
 var Decoder = require("./decoder.js");
 var Encoder = require("./encoder.js");
+var TCoder = require("./text_coder.js");
+
+var Vec = require("./vectors.js");
 
 var channel = new Channel(0.1);
 var matrixG = new Matrix(4,7,[[1,0,0,0,1,0,1],[0,1,0,0,1,1,0],[0,0,1,0,1,1,1],[0,0,0,1,0,1,1]]);//new Matrix(3,6,[[1,0,0,1,0,1],[0,1,0,1,1,0],[0,0,1,0,1,1]]);
@@ -88,6 +91,45 @@ app.post('/encode', function(req, res){
         receivedVector: vector,
         mistakePositions: mistakes,
         numOfMistakes: mistakes.length
+    }
+    res.send(result);
+});
+
+app.post('/encode_t', function(req, res){
+    var body = req.body;
+    
+    //klaidos tikimybė, gautas tekstas
+    var p = parseFloat(body.p);
+    var text = body.text;
+
+    //konvertuojame vektorių į skaičių masyvą
+    //vector = vector.map((x) => { return parseInt(x, 0) });
+
+    //sukuriame matricą iš paduotų k, n ir eilučių
+    var matrix = parseMatrix(body.n, body.k, body.matrix);
+
+    //sukuriame kanalą su tikimybe p
+    var channel = new Channel(p);
+
+    //sukuriame užkodavimo objektą
+    var encoder = new Encoder(matrix);
+
+    //sukuriame užkodavimo objektą
+    var decoder = new Decoder(matrix);
+
+    //sukuriame objektą, kuris dirbs su tekstu
+    var tCoder = new TCoder(encoder, channel, decoder);
+
+    //kaip atrodo tekstas be kodavimo
+    var textNoCoding = tCoder.textNoEncoding(text, matrix.row_n);
+
+    //kaip atrodo tekstas naudojant kodavimą
+    var textWithCoding = tCoder.textWithEncoding(text);
+
+    // grąžiname tekstą su užkodaviu ir be
+    var result = {
+        textNoCoding: textNoCoding,
+        textWithCoding: textWithCoding
     }
     res.send(result);
 });

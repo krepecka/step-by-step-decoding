@@ -114,6 +114,6 @@ ul.tab li a:focus, .active {
 /* Style the tab content */
 .tabcontent {
     display: none;
-    padding: 6px 12px;
+    padding: 0;
     border-top: none;
 }
