@@ -26,7 +26,6 @@ $("#encode").click(function (e) {
             matrix: rows,
             vector: vector
         },
-        //dataType: "json"
     }).done(function (data) {
         console.log(data);
         parseEncodingResult(data);
@@ -43,21 +42,25 @@ $("#decode").click(function (e) {
     vector = checkBasicFields(n, k, p, vector);
     var rows = checkMatrix(matrix, n, k);
 
-    // $.ajax({
-    //     url: '/decode',
-    //     method: "POST",
-    //     data: {
-    //         k: k,
-    //         n: n,
-    //         p: p,
-    //         matrix: rows,
-    //         vector: vector
-    //     },
-    //     //dataType: "json"
-    // }).done(function (data) {
-    //     console.log(data);
-    //     parseEncodingResult(data);
-    // });
+    //jei nepraėjo tikrinimų - nevykdom
+    if(!(vector && rows)){
+        return
+    }
+
+    $.ajax({
+        url: '/decode',
+        method: "POST",
+        data: {
+            k: k,
+            n: n,
+            matrix: rows,
+            vector: vector
+        },
+    }).done(function (data) {
+        console.log(data);
+        parseDecodingResult(data);
+    });
+
 });
 
 function checkBasicFields(k, n, p, vector) {
@@ -146,4 +149,9 @@ function parseEncodingResult(data) {
     $('#mistakes').val(mistakes.join(', '));
 
     $('#decode').show();
+}
+
+function parseDecodingResult(data){
+    var decoded = data.decodedVector;
+    console.log(decoded);
 }

@@ -2,7 +2,6 @@
 
 var express = require('express');
 var bodyParser = require('body-parser');
-// var consolidate = require('consolidate');
 
 var Matrix = require("./matrix.js").Matrix;
 var Channel = require("./channel.js").Channel;
@@ -18,48 +17,72 @@ var app = express();
 
 //pateikiami statiniai puslapiai
 app.use(express.static(__dirname + '/public'));
-// app.engine('html', consolidate.nunjucks);
-// app.set('view engine', 'html');
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.get('/encode', function(req, res){
-    var path = req.path;
-    res.locals.path = path;
-    //res.render('index');
-    res.send("<h1>Hello world, once again!</h1>");
-});
-
-//Užkodavimo ir siuntimo kanalu procedūros
-app.post('/encode', function(req, res){
-    var path = req.path;
+app.post('/decode', function(req, res){
     var body = req.body;
-    res.locals.path = path;
     
-    var rows = body.matrix.map((row) => {
-        return row.map((val) => {
-            return parseInt(val, 0);
-        })
-    })
-
-    var p = parseFloat(body.p);
-    var k = parseInt(body.k);
-    var n = parseInt(body.n);
+    //vektorius, kurį reikia dekoduoti
     var vector = body.vector;
 
+    //konvertuojame vektorių į skaičių masyvą
     vector = vector.map((x) => { return parseInt(x, 0) });
 
-    var matrix = new Matrix(n, k, rows);
+    //sukuriame matricą iš paduotų k, n ir eilučių
+    var matrix = parseMatrix(body.n, body.k, body.matrix);
+
+    //sukuriame dekodavimo objektą
+    var decoder = new Decoder(matrix);
+
+    //užkoduojam vectorių
+    var vector = decoder.decodeVector(vector);
+
+    //grąžiname :
+    //  decodedVector - dekoduotas vektorius
+    var result = {
+        decodedVector: vector
+    }
+    res.send(result);
+});
+
+//Užkodavimo ir siuntimo kanalu procedūros.
+//Paspaudus mygtuką [užkoduoti]
+//Įeities parametrai: matrica, klaidos tikimybė, kodo ilgis ir dimensija
+app.post('/encode', function(req, res){
+    var body = req.body;
+    
+    //klaidos tikimybė, vektorius
+    var p = parseFloat(body.p);
+    var vector = body.vector;
+
+    //konvertuojame vektorių į skaičių masyvą
+    vector = vector.map((x) => { return parseInt(x, 0) });
+
+    //sukuriame matricą iš paduotų k, n ir eilučių
+    var matrix = parseMatrix(body.n, body.k, body.matrix);
+
+    //sukuriame kanalą su tikimybe p
     var channel = new Channel(p);
+
+    //sukuriame užkodavimo objektą
     var encoder = new Encoder(matrix);
+
     //užkoduojam vectorių
     var vector = encoder.encodeVector(vector);
-    //nukopijuojame vektorių, nes kanale jis pasikeis
+
+    //nukopijuojame vektorių, nes kanale jis bus pakeistas
     var encodedVector = vector.slice(0);
-    //siunčiam kanalu
+    //siunčiam kanalu. gauname klaidų pozicijas
     var mistakes = channel.send(vector);
 
+    //grąžiname :
+    //  encodedVector - vektorius po Užkodavimo
+    //  receivedVecor - iš kanalo gautas vektorius
+    //  mistakePositions - pozicijos, kuriose siunčiant kanalu padarytos klaidos
+    //  numOfMistakes - klaidų skaičius
     var result = {
         encodedVector: encodedVector,
         receivedVector: vector,
@@ -69,20 +92,26 @@ app.post('/encode', function(req, res){
     res.send(result);
 });
 
-app.post('/blog/:title?', (req, res) => {
-    var title = req.params.title;
-    if(title === undefined){
-        res.status(200);
-        res.render('blog', {'posts' : postList});
-    } else{
-        var post = posts[title] || {};
-        res.render('post', {'post' : post});
-    }
-});
+function parseMatrix(strN, strK, strM){
+    //Matricos eilutės gaunamos kaip tekstas. Paverčiam į skaičių masyvus
+    var rows = strM.map((row) => {
+        return row.map((val) => {
+            return parseInt(val, 0);
+        });
+    })
 
-//portas 3000 lokaliam paleidimui
+    //kodo ilgis ir dimensija
+    var k = parseInt(strK);
+    var n = parseInt(strN);
+
+    //sukuriame matricą iš paduotų k, n ir eilučių
+    return new Matrix(n, k, rows);
+}
+
+//Paleidžiame aplikaciją
+//  portas 3000 lokaliam paleidimui
 app.listen(process.env.PORT || 3000, function(){
-    console.log("Application is runnin on Localhost:3000 !");
+    console.log("Application is running on Localhost:3000 !");
 });
 
 

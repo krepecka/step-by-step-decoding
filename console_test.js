@@ -5,8 +5,9 @@ var Channel = require("./channel.js").Channel;
 var Decoder = require("./decoder.js");
 var Encoder = require("./encoder.js");
 
-var channel = new Channel(0.1);
-var matrixG = new Matrix(4,7,[[1,0,0,0,1,0,1],[0,1,0,0,1,1,0],[0,0,1,0,1,1,1],[0,0,0,1,0,1,1]]);//new Matrix(3,6,[[1,0,0,1,0,1],[0,1,0,1,1,0],[0,0,1,0,1,1]]);
+var channel = new Channel(0.5);
+//var matrixG = new Matrix(4,7,[[1,0,0,0,1,0,1],[0,1,0,0,1,1,0],[0,0,1,0,1,1,1],[0,0,0,1,0,1,1]]);//new Matrix(3,6,[[1,0,0,1,0,1],[0,1,0,1,1,0],[0,0,1,0,1,1]]);
+var matrixG = new Matrix(1, 5, [[1,1,1,1,1]]);
 var decoder = new Decoder(matrixG);
 var encoder = new Encoder(matrixG);
 
@@ -14,7 +15,7 @@ matrixG.show();
 matrixG.createParityCheckMatrix().show();
 
 
-var vector = [0,0,1,1];
+var vector = [1];
 console.log("Starting vector: " + vector);
 
 

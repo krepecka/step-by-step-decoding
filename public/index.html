@@ -8,27 +8,41 @@
 </head>
 
 <body>
+    <ul class="tab">
+        <li>
+            <a href="javascript:void(0)" class="tablinks" onclick="changeTab(event, 'Vector')" id="defaultOpen">Vektorius</a>
+        </li>
+        <li>
+            <a href="javascript:void(0)" class="tablinks" onclick="changeTab(event, 'Text')">Tekstas</a>
+        </li>
+        <li>
+            <a href="javascript:void(0)" class="tablinks" onclick="changeTab(event, 'Image')">Paveikslėlis</a>
+        </li>
+    </ul>
+
     <form method="post">
-        <div>
-            <label>Kodo dimensija(n):</label>
-            <input type="number" id="code_dimension" />
-        </div>
-        <div>
-            <label>Kodo ilgis(k):</label>
-            <input type="number" id="code_length" />
-        </div>
-        <div>
-            <label>Klaidos tikimybė(0 <= <i>p</i> <= 1)</label>
-            <input type="number" min="0" max="1" step="0.00001" id="p" />
-        </div>
-        <div>
-            <!--<fieldset disabled>-->
 
-            <label for="msg">Generuojanti matrica:</label>
-            <textarea id="matrix" placeholder="Standartinio pavidalo. Langelius atskirkite tarpais, matricos eilutes - nauja eilute"></textarea>
+    <h3>Kodo parametrai</h3>
 
-            <!--</fieldset>-->
-        </div>
+    <div>
+        <label>Kodo dimensija(n):</label>
+        <input type="number" id="code_dimension" />
+    </div>
+    <div>
+        <label>Kodo ilgis(k):</label>
+        <input type="number" id="code_length" />
+    </div>
+    <div>
+        <label>Klaidos tikimybė(0 <= <i>p</i> <= 1)</label>
+        <input type="number" min="0" max="1" step="0.00001" id="p" />
+    </div>
+    <div>
+        <label for="msg">Generuojanti matrica:</label>
+        <textarea id="matrix" placeholder="Standartinio pavidalo. Langelius atskirkite tarpais, matricos eilutes - nauja eilute"></textarea>
+    </div>
+
+    <div id="Vector" class="tabcontent">
+        <h3>Vektorius</h3>
         <div>
             <label>Įveskite n ilgio vektorių</label>
             <input type="number" id="vector" />
@@ -44,7 +58,7 @@
             </div>
             <div>
                 <label>Iš kanalo gautas vektorius</label>
-                <input type="number" id="received"/>
+                <input type="number" id="received" />
             </div>
             <div>
                 <label>Klaidų skaičius</label>
@@ -59,9 +73,23 @@
         <div class="button">
             <button type="button" id="decode">Dekoduoti iš kanalo gautą vektorių</button>
         </div>
-    </form>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="js/index.js"></script>
+    </div>
+
+    <div id="Text" class="tabcontent">
+        <h3>Text</h3>
+        <p>Text is the capital of France.</p>
+    </div>
+
+    <div id="Image" class="tabcontent">
+        <h3>Image</h3>
+        <p>Image is the capital of Japan.</p>
+    </div>
+
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="js/index.js"></script>
+<script src="js/tabs.js"></script>
+
 </body>
 
 </html>

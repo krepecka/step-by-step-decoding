@@ -3,6 +3,7 @@
 const Vec = require('./vectors.js');
 const q = 2;
 
+//Dekodavimo klasė. Jai užtenka perduoti generuojančią matricą.
 class Decoder {
     constructor(matrixG) {
         this.matrixG = matrixG;
@@ -21,17 +22,23 @@ class Decoder {
             code_words[i] = matrixG.multByVector(Vec.intToBinaryArr(i, n));
         }
 
-        //konstruojame standard array
+        //konstruojame standartinę lentelę
         let st_arr = new Array();
 
         //pirma eilutė yra mūsų kodo žodžiai
         st_arr.push(code_words);
-        for (var i = 0; i < k; i++) {
+
+        //sukuriame likusias standartinė lentelės eilutes
+        for (var i = 0; i < Math.pow(2,k)/code_words.length - 1 ; i++) {
             setCosetRow(st_arr, k, code_words.length);
         }
+
         printStandardArray(st_arr);
+
+        //Decoder objektui išsaugome ryšį tarp klasių lyderių svorių ir sindromų 
         this.syndromesToWeight = getSyndromes(st_arr, this.matrixH);
 
+        //išmetame standartinę lentelę
         st_arr = null;
     }
 }
@@ -60,6 +67,8 @@ Decoder.prototype.decodeVector = function (vector) {
         }
         ePos++;
     }
+
+    //atkerpame pirmus n bitų - jie yra mūsų dekoduotas žodis
     return vector.slice(0, this.n);
 }
 
@@ -82,7 +91,7 @@ function setCosetRow(st_arr, k, code_word_count) {
         allPossibleNumbers.push(i);
     }
 
-    //iš visų galimų skaičių atmetame tuos, kurie jau panaudoti standard array
+    //iš visų galimų skaičių atmetame tuos, kurie jau panaudoti standartinėje lentelėje
     var possNumbers = allPossibleNumbers.filter((x) => {
         for (var j = 0; j < takenNums.length; j++) {
             var row = takenNums[j];
@@ -106,12 +115,17 @@ function setCosetRow(st_arr, k, code_word_count) {
 
     //formuojam rinkinį
     var coset = [];
+
+    //pirmoji eilutė - kodo C žodžiai
     var firstCoset = st_arr[0];
-    // imam pirmą elementą
+    //imam pirmą elementą iš galimų pasirinkti vektorių
+    // pirmas elementas bus su mažiausiu svoriu, nes jau išrikiavome vektorius pagal svorį
     var cosetLeader = allPossibleVectors.shift();
 
+    //formuojame naują rinkinį. pridedame klasės lyderį
     coset.push(cosetLeader);
 
+    //sudedinėjame kodo žodžius su naujos klasės lyderiu ir taip pildome lentelę
     for (var i = 1; i < code_word_count; i++) {
         coset.push(Vec.addVectors(cosetLeader, firstCoset[i]));
     }
@@ -122,12 +136,13 @@ function setCosetRow(st_arr, k, code_word_count) {
 function getSyndromes(st_arr, matrixH) {
     var cosetLeaders = [];
     var dictionary = {};
+
     //paimame pirmą stulpelį
     cosetLeaders = st_arr.map((row) => {
         return row[0];
     });
 
-    //sudarom ryšį tarp syndrome ir coset leadear svorio
+    //sudarom ryšį tarp sindromo ir klasės lyderio svorio
     for (var i = 0; i < cosetLeaders.length; i++) {
         var leader = cosetLeaders[i];
         var syndrome = matrixH.multByVectorT(leader);
