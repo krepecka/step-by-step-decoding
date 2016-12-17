@@ -205,3 +205,9 @@ $("#endode_t").click(function (e) {
     });
 
 });
+
+function parseTextResult(data){
+    $("#text_noencoding").val(data.textNoCoding);
+    $("#text_decoded").val(data.textWithCoding);
+
+}

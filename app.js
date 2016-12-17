@@ -124,7 +124,7 @@ app.post('/encode_t', function(req, res){
     var textNoCoding = tCoder.textNoEncoding(text, matrix.row_n);
 
     //kaip atrodo tekstas naudojant kodavimą
-    var textWithCoding = tCoder.textWithEncoding(text);
+    var textWithCoding = tCoder.textWithEncoding(text, matrix.row_n);
 
     // grąžiname tekstą su užkodaviu ir be
     var result = {

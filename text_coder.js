@@ -14,7 +14,6 @@ class TextCoder{
 // ir sudeda į bufferį. Tada visą bufferį konvertuoja į bitų masyvą, sukarpo į reikiamo ilgio vektorius ir 
 // siunčia kanalu. 
 TextCoder.prototype.textNoEncoding = function(text, n){
-
     var buff = new Buffer(text);
 
     var bits = BitArray.fromBuffer(buff);
@@ -24,7 +23,43 @@ TextCoder.prototype.textNoEncoding = function(text, n){
 
     //jei paskutinis vektorius nesigauna pilnas, pridedame nulių
     if(t_bits !== 0){
-        var arr = new Array(t_bits);
+        var arr = new Array(n - t_bits);
+        arr.fill(0);
+
+        //pridedam prie galo
+        bits.push(...arr);
+    }
+
+    var result = [];
+    bits = bits.toArray();
+    console.log(bits);
+
+    while(bits.length){
+        var message = bits.splice(0, n);
+
+        this.channel.send(message);
+
+        result.push(...message);
+    }
+
+    //atkerpam tuos bitus, kuriuos pridėjom, kad sudaryti reikiamo ilgio vektorius
+    result.splice(result.length - 1 - t_bits, t_bits);
+
+    //iš bitų formuojame tekstą
+    return new BitArray(result).toBuffer().toString();
+}
+
+TextCoder.prototype.textWithEncoding = function(text, n){
+    var buff = new Buffer(text);
+
+    var bits = BitArray.fromBuffer(buff);
+
+    //tarnybinė informacija - pridėtų bitų skaičius
+    var t_bits = bits.length % n;
+
+    //jei paskutinis vektorius nesigauna pilnas, pridedame nulių
+    if(t_bits !== 0){
+        var arr = new Array(n - t_bits);
         arr.fill(0);
 
         //pridedam prie galo
@@ -35,18 +70,24 @@ TextCoder.prototype.textNoEncoding = function(text, n){
     bits = bits.toArray();
 
     while(bits.length){
-        var message = bits.splice(0, 1);
+        //paimam vektorių
+        var message = bits.splice(0, n);
+        //užkoduojame
+        var encoded_msg = this.encoder.encodeVector(message);
+        //siunčiam kanalu
+        this.channel.send(encoded_msg);
+        //dekoduojam
+        var decoded_msg = this.decoder.decodeVector(encoded_msg);
 
-        this.channel.send(message);
-
-        result.push(...message);
+        //pridedam prie rezultato
+        result.push(...decoded_msg);
     }
 
-    console.log(result);
-}
+    //atkerpam tuos bitus, kuriuos pridėjom, kad sudaryti reikiamo ilgio vektorius
+    result.splice(result.length - 1 - t_bits, t_bits);
 
-TextCoder.prototype.textWithEncoding = function(text, n){
-    return this.matrixG.multByVector(vector);
+    //iš bitų formuojame tekstą
+    return new BitArray(result).toBuffer().toString();
 }
 
 module.exports = TextCoder;
