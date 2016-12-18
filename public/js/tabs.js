@@ -1,5 +1,5 @@
 
-
+//kad veiktų tabai viršuje
 document.getElementById("defaultOpen").click();
 function changeTab(evt, cityName) {
     var i, tabcontent, tablinks;

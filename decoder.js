@@ -33,7 +33,7 @@ class Decoder {
             setCosetRow(st_arr, k, code_words.length);
         }
 
-        printStandardArray(st_arr);
+        //printStandardArray(st_arr);
 
         //Decoder objektui išsaugome ryšį tarp klasių lyderių svorių ir sindromų 
         this.syndromesToWeight = getSyndromes(st_arr, this.matrixH);
@@ -48,19 +48,21 @@ Decoder.prototype.decodeVector = function (vector) {
     var syndromeV = this.matrixH.multByVectorT(vector);
     var syndrome = syndromeV.join('');
 
+    //žiūrime, kokį svorį sindromas atitinka
     var w = this.syndromesToWeight[syndrome];
 
     //pradinė e pozicija - pats pirmas bitas
     var ePos = 0;
     var lastW;
 
+    //kai svoris bus lygus nuliui, būsime dekodavę
     while (w != 0) {
         lastW = w;
         vector = Vec.addToVectorPoss(vector, ePos);
         syndrome = this.matrixH.multByVectorT(vector)
         w = this.syndromesToWeight[syndrome.join('')];
 
-        //jei svoris nemažėja, grąžinam tą bitą atgal
+        //jei svoris nemažėja, grąžinam tą pakeistą bitą atgal
         if (w >= lastW) {
             Vec.addToVectorPoss(vector, ePos);
             w = lastW;

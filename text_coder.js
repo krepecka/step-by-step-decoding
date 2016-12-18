@@ -32,8 +32,8 @@ TextCoder.prototype.textNoEncoding = function(text, n){
 
     var result = [];
     bits = bits.toArray();
-    console.log(bits);
 
+    //atkerpam reikiamo ilgio žinutę ir siunčiam kanalu
     while(bits.length){
         var message = bits.splice(0, n);
 
@@ -45,7 +45,7 @@ TextCoder.prototype.textNoEncoding = function(text, n){
     //atkerpam tuos bitus, kuriuos pridėjom, kad sudaryti reikiamo ilgio vektorius
     result.splice(result.length - 1 - t_bits, t_bits);
 
-    //iš bitų formuojame tekstą
+    //iš bitų formuojame bufferį ir tada tekstą
     return new BitArray(result).toBuffer().toString();
 }
 

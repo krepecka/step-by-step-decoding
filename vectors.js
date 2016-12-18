@@ -8,12 +8,9 @@ var getWeight = function(vector) {
     return vector.filter((x) => { return x === 1 }).length;
 }
 
+// vektorių sudėtis
 var addVectors = function(vector1, vector2) {
     var result = [];
-
-    if(vector1 === undefined || vector2 === undefined){
-        console.log('a');
-    }
 
     if (vector1.length == vector2.length) {
         for (var i = 0; i < vector1.length; i++) {

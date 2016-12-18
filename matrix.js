@@ -122,4 +122,26 @@ Matrix.prototype.createParityCheckMatrix = function () {
     return new Matrix(k-n, this.col_n, newRows);
 }
 
+//sugeneruojama atsitiktinė standartinio pavidalo matrica
+var createRandomMatrix = function(n, k){
+    var rows = []
+
+    for(var i = 0; i < n; i++){
+        var row = [];
+
+        for(var j = 0; j < k; j++){
+            //standartinio pavidalo langeliai
+            if(n-j > 0){
+                row.push(i == j ? 1 : 0);//vienetukai ant įstrižainės
+            }else{ // nestarndartinio pavidalo
+                row.push(Math.random() > 0.5 ? 1 : 0);
+            }
+        }
+        rows.push(row)
+    }
+
+    return new Matrix(n, k, rows);
+}
+
 module.exports.Matrix = Matrix;
+module.exports.createRandomMatrix = createRandomMatrix;

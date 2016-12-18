@@ -4,17 +4,13 @@ var express = require('express');
 var bodyParser = require('body-parser');
 
 var Matrix = require("./matrix.js").Matrix;
+var createRandomMatrix = require("./matrix.js").createRandomMatrix;
 var Channel = require("./channel.js").Channel;
 var Decoder = require("./decoder.js");
 var Encoder = require("./encoder.js");
 var TCoder = require("./text_coder.js");
 
 var Vec = require("./vectors.js");
-
-var channel = new Channel(0.1);
-var matrixG = new Matrix(4,7,[[1,0,0,0,1,0,1],[0,1,0,0,1,1,0],[0,0,1,0,1,1,1],[0,0,0,1,0,1,1]]);//new Matrix(3,6,[[1,0,0,1,0,1],[0,1,0,1,1,0],[0,0,1,0,1,1]]);
-var decoder = new Decoder(matrixG);
-var encoder = new Encoder(matrixG);
 
 var app = express();
 
@@ -64,8 +60,13 @@ app.post('/encode', function(req, res){
     //konvertuojame vektorių į skaičių masyvą
     vector = vector.map((x) => { return parseInt(x, 0) });
 
-    //sukuriame matricą iš paduotų k, n ir eilučių
-    var matrix = parseMatrix(body.n, body.k, body.matrix);
+    //sukuriame matricą iš paduotų k, n ir eilučių arba generuojam atsitiktinę
+    var matrix;
+    if(body.matrix == ""){
+        matrix = createRandomMatrix(body.n, body.k)
+    }else{
+        matrix = parseMatrix(body.n, body.k, body.matrix);
+    }
 
     //sukuriame kanalą su tikimybe p
     var channel = new Channel(p);
@@ -86,11 +87,13 @@ app.post('/encode', function(req, res){
     //  receivedVecor - iš kanalo gautas vektorius
     //  mistakePositions - pozicijos, kuriose siunčiant kanalu padarytos klaidos
     //  numOfMistakes - klaidų skaičius
+    //  matrix - mūsų generuojanti matrica 
     var result = {
         encodedVector: encodedVector,
         receivedVector: vector,
         mistakePositions: mistakes,
-        numOfMistakes: mistakes.length
+        numOfMistakes: mistakes.length,
+        matrix: matrix
     }
     res.send(result);
 });
@@ -102,8 +105,6 @@ app.post('/encode_t', function(req, res){
     var p = parseFloat(body.p);
     var text = body.text;
 
-    //konvertuojame vektorių į skaičių masyvą
-    //vector = vector.map((x) => { return parseInt(x, 0) });
 
     //sukuriame matricą iš paduotų k, n ir eilučių
     var matrix = parseMatrix(body.n, body.k, body.matrix);
